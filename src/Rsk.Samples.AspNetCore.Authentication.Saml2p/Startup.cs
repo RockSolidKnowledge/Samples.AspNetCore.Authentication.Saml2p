@@ -20,44 +20,49 @@ namespace Rsk.Samples.AspNetCore.Authentication.Saml2p
                 .AddCookie("cookie")
                 .AddSaml2p("saml2p", options =>
                 {
-                    // Your entity ID (simplest to be your root URI)
-                    options.EntityId = "http://localhost:5001/saml";
+                    options.ServiceProviderOptions = new SpOptions
+                    {
+                        // Your entity ID (simplest to be your root URI)
+                        EntityId = "http://localhost:5001/saml",
 
-                    // Your private key for signing SAML Requests
-                    options.ServiceProviderSigningCertificate = new X509Certificate2("Resources/testclient.pfx", "test");
+                        // Your private key for signing SAML Requests
+                        SignAuthenticationRequests = true,
+                        SigningCertificate = new X509Certificate2("Resources/testclient.pfx", "test"),
 
-                    // Your private key for decrypting SAML Assertions (OPTIONAL)
-                    // options.ServiceProviderEncryptionCertificate = new X509Certificate2("Resources/idsrv3test.pfx", "idsrv3test");
+                        // Your private key for decrypting SAML Assertions (OPTIONAL)
+                        // EncryptionCertificate = new X509Certificate2("Resources/idsrv3test.pfx", "idsrv3test"),
 
-                    // The URI for the Identity Provider you want to integrate with
-                    options.IdentityProviderEntityId = "http://localhost:5000";
+                        // Endpoint to host your SP metadata
+                        MetadataPath = "/saml"
+                    };
 
-                    // The SSO endpoint in the Identity Provider to use
-                    options.IdentityProviderSsoEndpoint = "http://localhost:5000/saml/sso";
+                    options.IdentityProviderOptions = new IdpOptions
+                    {
+                        // The URI for the Identity Provider you want to integrate with
+                        EntityId = "http://localhost:5000",
 
-                    // The public key of the Identity Provider to verify signature
-                    options.IdentityProviderSigningCertificate = new X509Certificate2("Resources/idsrv3test.cer");
+                        // The SSO endpoint in the Identity Provider to use
+                        SsoEndpoint = "http://localhost:5000/saml/sso",
 
-                    // The binding type to use when sending SAML Requests
-                    options.BindingType = SamlBindingTypes.HttpRedirect;
+                        // The public key of the Identity Provider to verify signature
+                        SigningCertificate = new X509Certificate2("Resources/idsrv3test.cer"),
 
-                    // Endpoint to host your Service Provider metadata
-                    options.MetadataPath = "/saml";
-
+                        // The binding type to use when sending SAML Requests
+                        BindingType = SamlBindingTypes.HttpRedirect
+                    };
+                    
                     // Endpoint to receive SAML Responses
                     options.CallbackPath = "/saml/acs";
 
                     // Require user authentication on every SAML Request
                     options.ForceAuthentication = false;
 
-                    // Cookie used to track SAML request ID & relay state
-                    options.CorrelationCookieOptions = new CorrelationCookieOptions
-                    {
-                        Secure = false,
-                        LifetimeInMinutes = 30
-                    };
-
+                    // local auth type to sign in using
                     options.SignInScheme = "cookie";
+
+                    // license from sales@rocksolidknowledge.com
+                    options.Licensee = "";
+                    options.LicenseKey = "";
                 });
         }
 
