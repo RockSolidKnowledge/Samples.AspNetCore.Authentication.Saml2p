@@ -13,17 +13,8 @@ namespace Rsk.Samples.AspNetCore.Authentication.Saml2p.Controllers
         }
 
         [Authorize]
-        public IActionResult About()
+        public IActionResult UserDetails()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 
